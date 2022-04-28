@@ -1,7 +1,7 @@
 # ShellPwnsh
 Backdoor en Golang, usando Reverse Shell en PowerShell, usando variables en el codigo para Bypass de AMSI y creando el archivo con pequeña poliformismo.
 
-Tested on these platforms:
+Testeado en estas plataformas:
 
 <table>
     <tr>
