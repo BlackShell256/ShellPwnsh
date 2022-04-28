@@ -25,7 +25,7 @@ Tested on these platforms:
 
 # Uso Linux:
 * `apt update && apt install golang`
-* `./ShellPwnsh.go`
+* `./ShellPwnsh`
 * `O cd source && go run ShellPwnsh.go`
 
 
