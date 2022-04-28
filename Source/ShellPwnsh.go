@@ -12,6 +12,7 @@ import (
 	"strconv"
 	"strings"
 	"time"
+	"path/filepath"
 
 	"github.com/fatih/color"
 )
@@ -22,14 +23,18 @@ var dir string
 func main() {
 
 	Execute("clear")
-	ex, _ := os.Executable()
+	ex, er := os.Executable()
+    	if er != nil {
+        panic(er)
+    	}
+    	exPath := filepath.Dir(ex)
 	Env := os.Getenv("TEMP")
 	end := strings.HasPrefix(ex, Env)
 	if end {
 		temp, _ := os.Getwd()
 		dir = temp 
 	} else {
-		dir = ex 
+		dir = exPath 
 	}
 
 	var ip string
