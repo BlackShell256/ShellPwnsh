@@ -21,7 +21,7 @@ Tested on these platforms:
 # Uso Windows:
 * `Instalado Golang`
 * `Ejecutar el binario compilado`
-* `O ejecutar archivo go de source, go run ShellPwnsh.go`
+* `O ejecutar archivo go de source, cd source && go run ShellPwnsh.go`
 
 # Uso Linux:
 * `apt update && apt install golang`
