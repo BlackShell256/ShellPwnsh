@@ -19,14 +19,16 @@ Tested on these platforms:
 </table>
 
 # Uso Windows:
-* `Instalado Golang`
 * `Ejecutar el binario compilado`
-* `O ejecutar archivo go de source, cd source && go run ShellPwnsh.go`
+* `O tambien puedes instalar Golang`
+* `Y ejecutar el archivo ShellPwnsh.go de source`
+* `cd source && go run ShellPwnsh.go`
 
 # Uso Linux:
+* `Ejecuat binario compilado con ./ShellPwnsh`
+* `O  ejecutar el archivo ShellPwnsh.go` 
 * `apt update && apt install golang`
-* `./ShellPwnsh`
-* `O cd source && go run ShellPwnsh.go`
+* `cd source && go run ShellPwnsh.go`
 
 
 
