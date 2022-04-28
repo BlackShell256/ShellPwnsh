@@ -59,7 +59,6 @@ func main() {
 		fmt.Scan(&port)
 		_, err := strconv.Atoi(port)
 		if err == nil {
-			port = port
 			break
 		}
 		color.Red("\n\n[!] Error : Puerto invalido")
@@ -136,7 +135,6 @@ func Execute(command string) {
 		if command == "comp" {
 			command = `go build -ldflags "-H windowsgui -s -w" `+ file
 		}
-		fmt.Println(command)
 		cmd = exec.Command("powershell", "-c", command)
 	default:
 		if command == "comp" {
