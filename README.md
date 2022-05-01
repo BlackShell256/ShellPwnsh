@@ -1,6 +1,6 @@
 # ShellPwnsh
 
-#Spanish:
+# Spanish:
 Generador de Backdoor en Golang, usando Reverse Shell en PowerShell, con formato de variables en el codigo para Bypass de AMSI y creando el archivo con pequeño poliformismo.
 
 Para los mas inexpertos, este archivo en Go, te crea un ejecutable (exe) con el cual tienes control remoto de un pc, ademas, es indetectable a los Antivirus y el generador intenta siempre generar el codigo de una manera distinta para la evasion ;)
