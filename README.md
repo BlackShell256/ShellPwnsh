@@ -28,7 +28,7 @@ Testeado en estas plataformas:
 
 # Uso Linux:
 * `apt update && apt install golang`
-* `Ejecuat binario compilado con ./ShellPwnsh`
+* `Ejecutar binario compilado con ./ShellPwnsh`
 * `O  ejecutar el archivo ShellPwnsh.go` 
 * `cd source && go run ShellPwnsh.go`
 
