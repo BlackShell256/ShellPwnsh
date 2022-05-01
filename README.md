@@ -34,13 +34,13 @@ Tested plataforms:
 * `O  ejecutar el archivo ShellPwnsh.go` 
 * `cd source && go run ShellPwnsh.go`
 
-# English
+# English:
 Backdoor generator in Golang, using Reverse Shell in PowerShell, with variable formatting in the code for AMSI Bypass and creating the file with small poliformismo.
 
 For the most inexperienced, this file in Go, creates you an executable (exe) with which you have remote control of a pc, moreover, it is undetectable to Antivirus and the generator always tries to generate the code in a different way for evasion ;)
 
 # Windows usage:
-* `Have Golang installed
+* `Have Golang installed`
 * `Execute the compiled binary`
 * `or run the ShellPwnsh.go file from source`
 * `cd source && go run ShellPwnsh.go` * `cd source && go run ShellPwnsh.go`
